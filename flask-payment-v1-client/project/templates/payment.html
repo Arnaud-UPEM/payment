@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+
+	<title>Test Payment JS</title>
+
+</head>
+
+<style type="text/css">
+	body {
+		width: 100%;
+		height: 100%;
+
+		margin: 0;
+		padding: 0;
+	}
+</style>
+
+<body>
+
+
+	<script type="text/javascript" src="http://127.0.0.1:5000/payment.js"></script>
+
+	<script type="text/javascript">
+		const name 		 	= 'ALSH&PERI';
+		const amount 		= 57050; 				// in cents
+		const email 		= 'parent@mail.fr';
+		const currency 	 	= 'EUR';
+		const description 	= 'Paiment ALSH/PERI 2019-2020';
+		const items = [
+			{
+				'name': 'PERI Septembre',
+			 	'sku': 'peri_09_2019_2020',
+			 	'price': '20.00',
+			 	'currency': 'USD',
+			 	'quantity': '1'
+			},
+			{
+				'name': 'PERI Octobre',
+			 	'sku': 'peri_10_2019_2020',
+			 	'price': '20.00',
+			 	'currency': 'USD',
+			 	'quantity': '1'
+			},
+			{
+				'name': 'PERI Novembre',
+			 	'sku': 'peri_11_2019_2020',
+			 	'price': '20.00',
+			 	'currency': 'USD',
+			 	'quantity': '1'
+			},
+			{
+				'name': 'ASLH Mercredi',
+			 	'sku': 'alsh_merc_2019_2020',
+			 	'price': '17.00',
+			 	'currency': 'USD',
+			 	'quantity': '20'
+			},
+			{
+				'name': 'ASLH Toussain',
+			 	'sku': 'alsh_tous_2019_2020',
+			 	'price': '17.00',
+			 	'currency': 'USD',
+			 	'quantity': '10'
+			},
+		];
+
+
+		Payment.configure({
+			onSuccess: function(providerKey) {
+				console.log('onSuccess');
+
+				/*
+					Send AJAX request to our checkout interface
+					with shop/products info and provider/provider/Key
+				*/
+				fetch('/checkout', {
+					method: 'POST',
+					headers: {'Content-Type': 'application/json'},
+					body: JSON.stringify({
+						
+						// provider: provider,
+						providerKey: providerKey,
+					}),
+				}).then(function(response) {
+
+				});
+			},
+
+			onFailure: function() {
+				console.log('onFailure');
+			},
+		});
+
+
+		window.onload = function() {
+			
+			Payment.open({
+				name: name,
+				amount: amount, // in cents
+				email: email,
+				currency: currency,
+				description: description,
+				items: items,
+			});
+		};
+	</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
+
+	<title>Test Payment JS</title>
+
+</head>
+
+<style type="text/css">
+	body {
+		width: 100%;
+		height: 100%;
+
+		margin: 0;
+		padding: 0;
+	}
+</style>
+
+<body>
+
+
+	<script type="text/javascript" src="{{ url_for('static', filename='payment.js') }}"></script>
+
+	<script type="text/javascript">
+		Payment.configure({'hello': 'world'});
+
+		console.log(Payment.settings.hello);
+
+		window.onload = function() {
+			
+			Payment.open({
+				name: 'ALSH&PERI',
+				amount: 57000, // in cents
+				email: 'parent@mail.fr',
+				currency: 'EUR',
+				description: 'Paiment ALSH/PERI 2019-2020',
+				items: [
+					{
+						'name': 'PERI Septembre',
+					 	'sku': 'peri_09_2019_2020',
+					 	'price': '20.00',
+					 	'currency': 'USD',
+					 	'quantity': '1'
+					},
+					{
+						'name': 'PERI Octobre',
+					 	'sku': 'peri_10_2019_2020',
+					 	'price': '20.00',
+					 	'currency': 'USD',
+					 	'quantity': '1'
+					},
+					{
+						'name': 'PERI Novembre',
+					 	'sku': 'peri_11_2019_2020',
+					 	'price': '20.00',
+					 	'currency': 'USD',
+					 	'quantity': '1'
+					},
+					{
+						'name': 'ASLH Mercredi',
+					 	'sku': 'alsh_merc_2019_2020',
+					 	'price': '17.00',
+					 	'currency': 'USD',
+					 	'quantity': '20'
+					},
+					{
+						'name': 'ASLH Toussain',
+					 	'sku': 'alsh_tous_2019_2020',
+					 	'price': '17.00',
+					 	'currency': 'USD',
+					 	'quantity': '10'
+					},
+				]
+			});
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+	<style type="text/css">
+		iframe {
+			width: 100%; 
+			height: 100%;
+
+			top: 0;
+			left: 0;
+			z-index: 100;
+			position: fixed;
+		}
+	</style>
+
+    <h2>{{ p.name }}</h2>
+
+    <h4>ID</h4>
+    <p>{{ p.id }}</p>
+
+    <h4>Description</h4>
+    <p>{{ p.description }}</p>
+
+    <h4>Price</h4>
+    <p>{{ p.amount_in_eur }} €</p>
+
+    <button id="buy-it">Acheter</button>
+
+    <div id="status"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript" src="http://127.0.0.1:5000/payment.js"></script>
+
+	<script type="text/javascript">
+		var update_status = function(text) {
+            document.getElementById("status").innerText = text;
+        };
+
+        var handle = Payment.configure({
+        	
+        });
+
+        var handler = StripeCheckout.configure({
+            key: '{{ key }}',
+            image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+            locale: 'auto',
+            token: function(token) {
+                console.log(token);
+
+                fetch('/charge', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        token: token.id,
+                        amount: 500,
+                        description: 'A Flask Charge'
+                    })
+                })
+                .then(function(response) {
+                    console.log(response);
+                    if (response.ok) {
+                        update_status("Thanks for purchasing!");
+                    }
+                    else {
+                        throw new Error('Something went wrong.');
+                    }
+                })
+                .then(function(jsonResponse) {
+                    console.log(JSON.stringify(jsonResponse));
+                })
+                .catch(function(err) {
+                    update_status("Something went wrong.");
+                });
+            }
+        });
+
+        document.getElementById('custom-button')
+                .addEventListener('click', function(e) {
+            handler.open({
+                name: 'ArnaudInc',
+                description: 'A Flask Charge',
+                amount: 500
+            });
+            e.preventDefault();
+        });
+
+        window.addEventListener('popstate', function() {
+            handle.close();
+        });
+	</script>
+{% endblock %}

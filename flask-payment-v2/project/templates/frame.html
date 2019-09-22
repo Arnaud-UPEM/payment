@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="user-scalable=no,width=device-width,initial-scale=1,maximum-scale=1">
+
+	<title></title>
+
+	<!-- Vendor Styles -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/bulma/bulma.min.css') }}">
+
+	<!-- Custom Styles -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='frame.css') }}">
+</head>
+
+<style type="text/css">
+</style>
+
+<body>
+
+	<div class="container">		
+
+		<div class="modal is-active">
+
+			<div class="modal-background"></div>
+
+			<div class="modal-card">
+
+				<div class="modal-card-head">
+					
+					<div class="modal-card-title">
+						<p class="modal-card-title-main">
+							<!-- Fill with JS -->
+						</p>						
+
+						<p class="modal-card-title-sub">
+							<small><!-- Fill with JS --></small>
+						</p>
+					</div>
+
+      				<button class="delete" aria-label="close"></button>
+				</div>
+
+				<div class="modal-card-body">
+
+					<h2 class="subtitle">Récapitulatif de la commande</h2>
+
+					<div class="section recap">
+						
+						<div class="columns">
+							<p>
+								Email : 
+								<span class="customer-email">
+						  	  		<!-- Fill with JS -->
+								</span>
+							</p>
+						</div>
+
+						<div class="columns">
+							<p>
+								Montant : 
+								<span class="customer-amount">
+									<!-- Fill with JS -->
+								</span>
+								<span class="customer-currency">
+									<!-- Fill with JS -->
+								</span>
+							</p>
+						</div>
+					</div>
+
+					<h2 class="subtitle">Choisissez votre mode de paiement</h2>
+
+					<div class="section stripe">
+
+						<p><b>Stripe</b> est une solution de paiement internationale.</p>
+						
+						<button id="stripe-toggle" class="button">
+							<img data-caller="stripe" src="{{ url_for('static', filename='Payment/stripe.svg') }}">
+						</button>
+						
+						<span class="provider-fee">Toutes les cartes sont acceptées. Frais: 2%</span>
+					</div>
+
+					<div class="section paypal">
+						
+						<div id="paypal-wrapper"></div>
+
+						<span class="provider-fee">Frais: 2%</span>
+						
+					</div>
+					
+					<div class="section choice" style="display: none;">
+
+			
+						<ul class="list list-row">
+
+							<li class="list-item">
+
+								<div class="f-Provider">
+									
+								</div>
+
+							</li>
+
+							<li class="list-item">
+
+								<div class="f-Provider">
+									<img data-caller="paypal" src="{{ url_for('static', filename='Payment/paypal.svg') }}">
+								</div>
+
+								<span class="f-Provider-fee">Frais: 2%</span>
+							</li>
+						</ul>
+					</div>
+
+					<div class="section payment" style="display: none;">
+						
+						<h2 class="subtitle">2 - Procédez au paiement</h2>
+
+						<ul class="list list-column">
+							
+							<li class="list-item f-Provider-Stripe">
+
+								<div class="f-Provider">
+									
+								</div>
+							</li>
+
+							<li class="list-item f-Provider-Paypal">							
+
+								<div class="f-Provider">
+									
+								</div>
+							</li>
+						</ul>
+
+					</div>
+				</div>
+
+				<div class="modal-card-foot">
+					
+					<button class="button is-danger">Annuler</button>
+				</div>
+				
+			</div>		
+
+		</div>
+	</div>
+
+	<script src="https://checkout.stripe.com/checkout.js"></script>
+	<script src="https://www.paypal.com/sdk/js?client-id=ATxswOoJxva3ZpvF9S5jym3yktJ0qiQSj6xCu98jgJJnGC44Z3xMBQgJAuntDRTVItCg07VnswfJFUAi"></script>
+
+	<script type="text/javascript">
+		// document.querySelectorAll('f-Providers').addEventListener('click', open_provider);
+		// document.querySelectorAll('.f-Provider img').forEach(function (item, index) {
+		// 	item.addEventListener('click', open_provider);
+		// });
+
+		function open_provider(e) {
+			switch (e.target.getAttribute('data-caller')) {
+				case 'paypal':
+					payment_open();
+					paypal_open();
+					break;
+
+
+				case 'stripe':
+					open_stripe();
+					break;
+			}
+		}
+
+
+		function payment_open() {
+			document.querySelector('.payment').classList.add('active');
+		}
+
+		function payment_close() {
+			document.querySelector('.payment').classList.remove('active');
+		}
+
+
+		function paypal_open() {
+			document.querySelector('.f-Provider-Paypal').classList.add('active');
+		}
+
+		function paypal_close() {
+			document.querySelector('.f-Provider-Paypal').classList.remove('active');
+		}
+		
+	</script>
+
+	<script type="text/javascript">
+		var stripe_handler = undefined;
+
+		var purchase_details = {
+		/*
+			name: '',
+			email: '',
+			amount: 0,
+			currency: 'EUR',
+			description: '',
+
+			items: [
+				//  "name": "Fitness Watch",
+			 	//  "sku": "sku04",
+			 	//  "price": "0.55",
+			 	//  "currency": "USD",
+			 	//  "quantity": "1"
+			],
+		*/
+		};
+
+
+		function init_ui() {
+			var amount = purchase_details.amount / 100;
+
+			document.querySelector('.modal-card-title-main')
+					.innerHTML = purchase_details.name;
+
+			document.querySelector('.modal-card-title-sub small')
+					.innerHTML = purchase_details.description;
+
+			document.querySelector('.customer-email')
+					.innerHTML = purchase_details.email;
+
+			document.querySelector('.customer-amount')
+					.innerHTML = amount;
+					
+			document.querySelector('.customer-currency')
+					.innerHTML = purchase_details.currency;
+
+			console.log(purchase_details.name);
+			console.log(purchase_details.description);
+		}
+
+
+		function init_stripe() {
+			stripe_handler = StripeCheckout.configure({
+	            key: '{{ key }}',
+	            image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+	            locale: 'auto',
+	            token: function(token) {
+	                console.log(token);
+
+	                parent.Payment.settings.onSuccess('stripe', token.id)
+
+	                /*
+	                fetch('/charge_stripe', {
+	                    method: 'POST',
+	                    headers: {'Content-Type': 'application/json'},
+	                    body: JSON.stringify({
+	                    	name: purchase_details.name,
+	                        description: 'A Flask Charge',
+
+	                        customerID: 0,
+
+	                        providerKey: token.id,
+
+	                        amount: purchase_details.amount,
+	                        currency: purchase_details.currency,
+
+	                    	// email: token.email,
+	                    })
+	                })
+	                .then(function(response) {
+	                    console.log(response);
+	                    if (response.ok) {
+
+	                    	checkout_success('stripe', token.ID);
+	                    }
+	                    else {
+	                    	if (response.status == 500) {
+	                    		checkout_failure('stripe', response.statusText);
+	                    	}
+	                    }
+	                });
+	                */
+	            }
+        	});
+		}
+
+
+		function init_paypal() {
+
+			paypal.Buttons({
+				createOrder: function(data, actions) {
+					return actions.order.create({
+						purchase_units: [{
+							amount: {
+								value: purchase_details.amount.toString(),
+								// currency_code: 'EUR',
+							},
+							payee: {
+								email: purchase_details.email
+							},
+							items: purchase_details.items,
+						}]
+					});
+				},
+				onApprove: function(data, actions) {
+					return actions.order.capture().then(function(details) {
+						alert('Transaction completed by ' + details.payer.name.given_name);
+
+						return parent.Payment.settings.onSuccess('paypal', data.orderID);
+			        });
+				},
+				onError: function(error) {
+					console.log(error);	
+
+					parent.Payment.onFailure();				
+				},
+			}).render('#paypal-wrapper');
+		}
+
+
+		function init_events() {
+			// Stripe
+			// Toggle - Open
+			document.querySelector('#stripe-toggle')
+				.addEventListener('click', function() {
+					stripe_open();
+				});
+			// Signal - Close
+			window.addEventListener('popstate', function() {
+				console.log('popstate');
+				stripe_handler.close();
+			});
+
+			// Modal
+			document.querySelector('.delete').addEventListener('click', function() {
+				modal_close();
+			});
+			document.querySelector('.button.is-danger').addEventListener('click', function() {
+				modal_close();
+			});
+		}
+
+
+		/*
+			Close this
+		*/
+		function modal_close() {
+			parent.Payment.close();
+		}
+
+
+		/*
+			Open stripe iframe
+		*/
+		function stripe_open() {
+			console.log('stripe_open');
+
+            stripe_handler.open({
+                name: purchase_details.name,
+                description: purchase_details.description,
+                amount: purchase_details.amount,
+            });
+		}
+
+
+		/*
+			Called when provider return a positive answer
+			to a payment 
+		*/
+		function checkout_success(provider) {
+
+			switch (provider) {
+
+				case 'stripe':
+					console.log('checkout_success() - Stripe, ${token}');
+					break;
+
+				case 'paypal':
+					console.log('checkout_success() - Paypal, ${token}');
+					break;
+
+				default:
+					console.log('checkout_success() - Error, incorrect provider');
+					break
+			}
+		}
+
+		/*
+			Called when provider return an error 
+			due to a failed payment 
+		*/
+		function checkout_failure(provider, error) {
+
+			switch (provider) {
+
+				case 'stripe':
+					console.log('checkout_failure() - Stripe, ${error}');
+					break;
+
+				case 'paypal':
+					console.log('checkout_failure() - Paypal, ${error}');
+					break;
+
+				default:
+					console.log('checkout_failure() - Error, incorrect provider');
+					break
+			}
+		}
+
+
+		/*
+			Called every time the iframe is opened
+			@params
+				test - Boolean - enable test mode for non-iframe mode
+		*/
+		function open(test = true) {
+			console.log('init');
+
+			if (parent.Payment === undefined) {
+				console.log('This window is not an iframe');
+
+				if (test) {
+					console.log('test enable');
+					
+					purchase_details.amount = 57000; // in cents
+
+					purchase_details.name = 'ALSH&PERI';
+					purchase_details.email = 'parent@mail.fr';
+					purchase_details.description = 'Paiment ALSH/PERI 2019-2020';
+					
+					purchase_details.items = [
+						{
+							'name': 'PERI Septembre',
+						 	'sku': 'peri_09_2019_2020',
+						 	'price': '20.00',
+						 	'currency': 'USD',
+						 	'quantity': '1'
+						},
+						{
+							'name': 'PERI Octobre',
+						 	'sku': 'peri_10_2019_2020',
+						 	'price': '20.00',
+						 	'currency': 'USD',
+						 	'quantity': '1'
+						},
+						{
+							'name': 'PERI Novembre',
+						 	'sku': 'peri_11_2019_2020',
+						 	'price': '20.00',
+						 	'currency': 'USD',
+						 	'quantity': '1'
+						},
+						{
+							'name': 'ASLH Mercredi',
+						 	'sku': 'alsh_merc_2019_2020',
+						 	'price': '17.00',
+						 	'currency': 'USD',
+						 	'quantity': '20'
+						},
+						{
+							'name': 'ASLH Toussain',
+						 	'sku': 'alsh_tous_2019_2020',
+						 	'price': '17.00',
+						 	'currency': 'USD',
+						 	'quantity': '10'
+						},
+					];
+				}
+				else {
+					console.log('Abort');
+					return;
+				}
+			}
+			else {
+				const p = parent.Payment.purchase_details;
+				
+				// Required values
+				if (p.email === undefined ||
+					p.amount === undefined) {
+					console.log('Error - No amount/email given');
+					return;
+				}
+				purchase_details.email = p.email;
+				purchase_details.amount = p.amount;
+
+				console.log(purchase_details.name);
+				console.log(purchase_details.description);
+
+				purchase_details.name = 
+					(p.name !== undefined) ? p.name : '';
+
+				purchase_details.items = 
+					(p.items !== undefined) ? p.items : [];
+
+				purchase_details.currency = 
+					(p.currency !== undefined) ? p.currency : 'EUR';
+
+				purchase_details.description = 
+					(p.description !== undefined) ? p.description : '';
+			}
+
+			// function open_treat_value(value, type) {
+
+			// }
+
+			init_ui();
+			init_stripe();
+			init_paypal();
+			init_events();
+		}
+
+		// open();
+	</script>
+
+</body>
+</html>

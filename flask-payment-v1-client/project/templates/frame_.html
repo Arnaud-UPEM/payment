@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="user-scalable=no,width=device-width,initial-scale=1,maximum-scale=1">
+
+	<title></title>
+
+	<!-- Vendor Styles -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/bulma/bulma.min.css') }}">
+
+	<!-- Custom Styles -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='frame.css') }}">
+</head>
+
+<style type="text/css">
+</style>
+
+<body>
+
+	<
+
+	<div class="container">
+		
+		<div class="f-Overlay">
+			<div class="f-Overlay-background"></div>
+		</div>
+
+		<div class="f-Modal">
+			
+			<div class="f-header">
+				Paiement ALSH Noel
+
+				<span class="f-Modal-close">X</span>
+			</div>
+
+			<div class="f-body">
+
+				<div class="f-body-section">
+
+					<h2 class="f-body-section-title">1 - Choisissez votre mode de paiement</h2>
+					
+					<div class="f-body-section-content">
+						
+						<div class="f-Choice">
+							
+							<ul class="list list-row">
+
+								<li class="list-item">
+
+									<div class="f-Provider">
+										<img data-caller="stripe" src="{{ url_for('static', filename='Payment/stripe.svg') }}">
+									</div>
+
+									<span class="f-Provider-fee">Frais: 2%</span>
+								</li>
+
+								<li class="list-item">
+
+									<div class="f-Provider">
+										<img data-caller="paypal" src="{{ url_for('static', filename='Payment/paypal.svg') }}">
+									</div>
+
+									<span class="f-Provider-fee">Frais: 2%</span>
+								</li>
+							</ul>
+
+						</div>
+					</div>
+
+				</div>
+
+				<div class="f-body-section" style="display: inherit;">
+
+					<h2 class="f-body-section-title">2 - Entrez vos informations bancaires</h2>
+					
+					<div class="f-body-section-content">
+
+						<div class="f-Payment">
+
+							<ul class="list list-column">
+								
+								<li class="list-item">
+
+									<div class="f-Provider f-Provider-Stripe">
+										
+									</div>
+								</li>
+
+								<li class="list-item">
+
+									<div class="f-Provider f-Provider-Paypal">
+										
+									</div>
+								</li>
+							</ul>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+
+			<div class="f-footer">
+				
+				<div class="f-Controls">
+					<button>Annuler</button>
+				</div>
+
+			</div>				
+
+		</div>
+	</div>
+
+	<script src="https://checkout.stripe.com/checkout.js"></script>
+	<script src="https://www.paypal.com/sdk/js?client-id=ATxswOoJxva3ZpvF9S5jym3yktJ0qiQSj6xCu98jgJJnGC44Z3xMBQgJAuntDRTVItCg07VnswfJFUAi"></script>
+
+	<script type="text/javascript">
+		// document.querySelectorAll('f-Providers').addEventListener('click', open_provider);
+		document.querySelectorAll('.f-Provider img').forEach(function (item, index) {
+			item.addEventListener('click', open_provider);
+		});
+		
+
+		var handler = undefined;
+
+		function init_stripe() {
+			handler = StripeCheckout.configure({
+	            key: '{{ key }}',
+	            image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+	            locale: 'auto',
+	            token: function(token) {
+	                console.log(token);
+
+	                fetch('/charge', {
+	                    method: 'POST',
+	                    headers: {'Content-Type': 'application/json'},
+	                    body: JSON.stringify({
+	                        token: token.id,
+	                        amount: 500,
+	                        description: 'A Flask Charge'
+	                    })
+	                })
+	                .then(function(response) {
+	                    console.log(response);
+	                    if (response.ok) {
+	                        update_status("Thanks for purchasing!");
+	                    }
+	                    else {
+	                        throw new Error('Something went wrong.');
+	                    }
+	                })
+	                .then(function(jsonResponse) {
+	                    console.log(JSON.stringify(jsonResponse));
+	                })
+	                .catch(function(err) {
+	                    update_status("Something went wrong.");
+	                });
+	            }
+        	});
+		}
+
+
+		function init_paypal() {
+
+			paypal.Buttons({
+				createOrder: function(data, actions) {
+					return actions.order.create({
+						purchase_units: [{
+							amount: {
+								value: '5.00',
+								// currency_code: 'EUR',
+							}
+						}]
+					});
+				},
+				onApprove: function(data, actions) {
+					return actions.order.capture().then(function(details) {
+						alert('Transaction completed by ' + details.payer.name.given_name);
+
+						return fetch('/charge_paypal', {
+		                    method: 'POST',
+		                    headers: {'Content-Type': 'application/json'},
+		                    body: JSON.stringify({
+		                        order_id: data.orderID,
+		                    })
+		                });
+					});
+				}
+			}).render('.f-Provider-Paypal');
+		}
+
+
+		function open_provider(e) {
+			switch (e.target.getAttribute('data-caller')) {
+				case 'paypal':
+					open_paypal();
+					break;
+
+
+				case 'stripe':
+					open_stripe();
+					break;
+			}
+		}
+
+
+		function open_paypal() {
+			console.log('open_paypal');
+
+		}
+
+
+		function open_stripe() {
+			console.log('open_stripe');
+
+            handler.open({
+                name: 'ArnaudInc',
+                description: 'A Flask Charge',
+                amount: 500
+            });
+		}
+
+
+		init_stripe();
+		init_paypal();
+	</script>
+
+</body>
+</html>

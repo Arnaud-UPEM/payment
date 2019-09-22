@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+    <h2>Buy for $5.00</h2>
+    <div id="paypal-button"></div>
+
+    <div id="status">
+    </div>
+
+    <button id="test-api">Test API</button>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=ATxswOoJxva3ZpvF9S5jym3yktJ0qiQSj6xCu98jgJJnGC44Z3xMBQgJAuntDRTVItCg07VnswfJFUAi"></script>
+
+	<script type="text/javascript">
+		paypal.Buttons({
+			createOrder: function(data, actions) {
+				return actions.order.create({
+					purchase_units: [{
+						amount: {
+							value: '5.00',
+							// currency_code: 'EUR',
+						}
+					}]
+				});
+			},
+			onApprove: function(data, actions) {
+				return actions.order.capture().then(function(details) {
+					alert('Transaction completed by ' + details.payer.name.given_name);
+
+					return fetch('/charge_paypal', {
+	                    method: 'POST',
+	                    headers: {'Content-Type': 'application/json'},
+	                    body: JSON.stringify({
+	                        order_id: data.orderID,
+	                    })
+	                });
+				});
+			}
+		}).render('#paypal-button');
+
+		document.getElementById('test-api').addEventListener('click', function(e) {
+			fetch('/charge_paypal', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    order_id: '65795130F6059093P',
+                })
+            });
+		});
+	</script>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

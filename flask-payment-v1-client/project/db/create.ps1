@@ -1,0 +1,1 @@
+. "C:\Program Files\PostgreSQL\11\bin\psql.exe" -U postgres -f "C:\Users\Ordi\Documents\Arnaud\flask-payment-v1-client\project\db\create.sql"

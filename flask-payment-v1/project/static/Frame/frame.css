@@ -1,0 +1,103 @@
+body {
+	width: 100%;
+	height: 100%;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+p { margin: 0; }
+
+li { list-style-type: none; }
+
+.list {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.list.list-row {
+	flex-direction: row;
+}
+
+.list.list-column {
+	flex-direction: column;
+}
+
+.list .list-item {
+	width: 100%;
+	text-align: center;
+}
+
+.container {
+	width: 100%;
+	min-height: 100vh;
+
+	z-index: 10;
+	position: relative;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.modal-card-title-main {}
+
+.modal-card-title-sub {
+	font-size: 16px;
+    font-style: italic;
+}
+
+
+.modal .section {
+	padding: 1.5rem;
+}
+
+/*
+	Sections
+*/
+.section {
+	text-align: center;
+}
+
+.section-title {
+	font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+
+
+.section.recap {}
+.section.recap .columns p {}
+.section.recap .columns span {}
+.section.recap .columns span.customer-email {}
+.section.recap .columns span.customer-amount {}
+.section.recap .columns span.customer-currency {}
+
+
+.section.stripe {}
+.section.stripe #stripe-toggle {
+	width: 10rem;
+	height: 5rem;
+
+	margin: 10px auto;
+	display: block;
+}
+.section.stripe #stripe-toggle img {
+	width: 100%;
+	height: 100%;
+}
+
+
+.section.paypal {}
+
+
+.provider-fee {
+    font-size: 12px;
+	text-align: center;
+    font-style: italic;
+    color: rgba(0, 0, 0, .8);
+}

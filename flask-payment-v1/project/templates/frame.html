@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="user-scalable=no,width=device-width,initial-scale=1,maximum-scale=1">
+
+	<title></title>
+
+	<!-- Vendors Styles -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/bulma/bulma.min.css') }}">
+
+	<!-- Custom Styles -->
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='Frame/frame.css') }}">
+</head>
+
+<body>
+
+	<div class="container">		
+
+		<div class="modal is-active">
+
+			<div class="modal-background"></div>
+
+			<div class="modal-card">
+
+				<div class="modal-card-head">
+					
+					<div class="modal-card-title">
+						<p class="modal-card-title-main">
+							<!-- Fill with JS -->
+						</p>						
+
+						<p class="modal-card-title-sub">
+							<small><!-- Fill with JS --></small>
+						</p>
+					</div>
+
+      				<button class="delete" aria-label="close"></button>
+				</div>
+
+				<div class="modal-card-body">
+
+					<h2 class="subtitle">Récapitulatif de la commande</h2>
+
+					<div class="section recap">
+						
+						<div class="columns">
+							<p>
+								Email : 
+								<span class="customer-email">
+						  	  		<!-- Fill with JS -->
+								</span>
+							</p>
+						</div>
+
+						<div class="columns">
+							<p>
+								Montant : 
+								<span class="customer-amount">
+									<!-- Fill with JS -->
+								</span>
+								<span class="customer-currency">
+									<!-- Fill with JS -->
+								</span>
+							</p>
+						</div>
+					</div>
+
+					<h2 class="subtitle">Choisissez votre mode de paiement</h2>
+
+					<div class="section stripe">
+
+						<h4 class="section-title">Stripe</h4>
+
+						<p><b>Stripe</b> est une solution de paiement internationale.</p>
+						
+						<button id="stripe-toggle" class="button">
+							<img data-caller="stripe" src="{{ url_for('static', filename='Payment/stripe.svg') }}">
+						</button>
+						
+						<span class="provider-fee">Toutes les cartes sont acceptées. Frais: 2%</span>
+					</div>
+
+					<div class="section paypal">
+
+						<h4 class="section-title">PayPal</h4>
+						
+						<div id="paypal-wrapper"></div>
+
+						<span class="provider-fee">Frais: 2%</span>
+						
+					</div>
+				</div>
+
+				<div class="modal-card-foot">
+					
+					<button class="button is-danger">Annuler</button>
+				</div>
+				
+			</div>		
+
+		</div>
+	</div>
+
+	<script src="https://checkout.stripe.com/checkout.js"></script>
+	<script src="https://www.paypal.com/sdk/js?client-id=ATxswOoJxva3ZpvF9S5jym3yktJ0qiQSj6xCu98jgJJnGC44Z3xMBQgJAuntDRTVItCg07VnswfJFUAi"></script>
+
+	<script src="{{ url_for('static', filename='Frame/frame.js') }}"></script>
+
+	<script type="text/javascript">
+		window.onload = function() {
+			Frame.init();
+			Frame.stripe_key = '{{ key }}';
+			// if (parent !== undefined)
+			// 	Frame.open();
+		};
+	</script>
+
+</body>
+</html>

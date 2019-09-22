@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="user-scalable=no,width=device-width,initial-scale=1,maximum-scale=1">
+
+	<title></title>
+
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='frame.css') }}">
+</head>
+
+<style type="text/css">
+	.f-body-section {
+
+	}
+
+	.f-body-section-title {
+
+	}
+
+	.f-body-section-content {
+
+	}
+</style>
+
+<body>
+
+	<div class="container">
+		
+		<div class="f-Overlay">
+			<div class="f-Overlay-background"></div>
+		</div>
+
+		<div class="f-Modal">
+			
+			<div class="f-header">
+				Paiement ALSH Noel
+
+				<span class="f-Modal-close">X</span>
+			</div>
+
+			<div class="f-body">
+
+				<div class="f-body-section">
+
+					<h2 class="f-body-section-title">1 - Choisissez votre mode de paiement</h2>
+					
+					<div class="f-body-section-content">
+						
+						<div class="f-Providers">
+							
+							<div class="f-Providers-list">
+								
+								<ul class="list list-row">
+
+									<li class="list-item">
+
+										<div class="f-Providers-company">
+											<img src="{{ url_for('static', filename='Payment/stripe.svg') }}">
+										</div>
+
+										<span class="f-Providers-fee">Frais: 2%</span>
+									</li>
+
+									<li class="list-item">
+
+										<div class="f-Providers-company">
+											<img src="{{ url_for('static', filename='Payment/paypal.svg') }}">
+										</div>
+
+										<span class="f-Providers-fee">Frais: 2%</span>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="f-body-section">
+
+					<h2 class="f-body-section-title">2 - Entrez vos informations bancaires</h2>
+					
+					<div class="f-body-section-content">
+
+						<div class="f-Payment">
+							
+							<div class="f-Payment-company stripe">
+								
+								<form method="post" action="#">
+									
+								</form>
+
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+
+			<div class="f-footer">
+				
+				<div class="f-Controls">
+					<button>Annuler</button>
+				</div>
+
+			</div>				
+
+		</div>
+	</div>
+
+</body>
+</html>

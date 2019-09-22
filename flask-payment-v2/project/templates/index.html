@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+    <h2>Buy for $5.00</h2>
+    <button type="button" class="btn btn-primary" id="custom-button">
+        Pay with Card
+    </button>
+
+    <div id="status">
+        <br>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="https://checkout.stripe.com/checkout.js"></script>
+
+    <script>
+        var update_status = function(text) {
+            document.getElementById("status").innerText = text;
+        };
+
+        var handler = StripeCheckout.configure({
+            key: '{{ key }}',
+            image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+            locale: 'auto',
+            token: function(token) {
+                console.log(token);
+
+                fetch('/charge', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        token: token.id,
+                        amount: 500,
+                        description: 'A Flask Charge'
+                    })
+                })
+                .then(function(response) {
+                    console.log(response);
+                    if (response.ok) {
+                        update_status("Thanks for purchasing!");
+                    }
+                    else {
+                        throw new Error('Something went wrong.');
+                    }
+                })
+                .then(function(jsonResponse) {
+                    console.log(JSON.stringify(jsonResponse));
+                })
+                .catch(function(err) {
+                    update_status("Something went wrong.");
+                });
+            }
+        });
+
+        document.getElementById('custom-button')
+                .addEventListener('click', function(e) {
+            handler.open({
+                name: 'ArnaudInc',
+                description: 'A Flask Charge',
+                amount: 500
+            });
+            e.preventDefault();
+        });
+
+        window.addEventListener('popstate', function() {
+            handle.close();
+        });
+    </script>
+{% endblock %}

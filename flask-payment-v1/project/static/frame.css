@@ -1,0 +1,163 @@
+body {
+	width: 100%;
+	height: 100%;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+p { margin: 0; }
+
+li { list-style-type: none; }
+
+.list {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.list.list-row {
+	flex-direction: row;
+}
+
+.list.list-column {
+	flex-direction: column;
+}
+
+.list .list-item {
+	width: 100%;
+	text-align: center;
+}
+
+.container {
+	width: 100%;
+	min-height: 100vh;
+
+	z-index: 10;
+	position: relative;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.modal-card-title-main {}
+
+.modal-card-title-sub {
+	font-size: 16px;
+    font-style: italic;
+}
+
+
+.modal .section {
+	padding: 1.5rem;
+}
+
+/*
+	Sections
+*/
+.recap {
+
+}
+	
+.recap .columns p {
+
+}
+
+.recap .columns span {}
+.recap .columns span.customer-email {}
+.recap .columns span.customer-amount {}
+.recap .columns span.customer-currency {}
+
+
+.stripe {
+	/*display: flex;*/
+	text-align: center;
+}
+
+.stripe #stripe-toggle {
+	width: 10rem;
+	height: 5rem;
+
+	margin: 10px auto;
+	display: block;
+}
+.stripe #stripe-toggle img {
+	width: 100%;
+	height: 100%;
+}
+
+
+.paypal {}
+
+
+.provider-fee {
+    font-size: 12px;
+	text-align: center;
+    font-style: italic;
+    color: rgba(0, 0, 0, .8);
+}
+
+.section.choice {}
+
+.section.payment {
+	display: none;
+}
+.section.payment.active {
+	display: inherit;
+}
+
+.payment
+.list-item {
+	display: none;
+}
+.payment
+.list-item.active {
+	display: inherit;
+}
+
+
+/*
+	Providers
+*/
+
+.f-Provider {}
+
+.choice .f-Provider {
+	width: 130px;
+	height: 70px;
+
+	margin: 10px auto;
+	padding: 10px;
+
+	border: 1px solid rgba(0, 0, 0, .4);
+	border-radius: 10px;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.f-Choice
+.f-Provider:active {
+	box-shadow: inset 0px 0px 2px 0px rgba(0,0,0,0.75);
+	background-color: hsla(0, 0%, 95%, 1);
+}
+
+.f-Payment
+.f-Provider {}
+
+.f-Provider img {
+	width: 100%;
+}
+
+.f-Provider-fee {
+	text-align: center;
+    font-size: 12px;
+    color: rgba(0, 0, 0, .8);
+}
+
+.f-Provider-Stripe {}
+.f-Provider-Paypal {}
